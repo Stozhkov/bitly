@@ -4,13 +4,9 @@ services:
   web:
     build: ./web
 #    command.md: python manage.py runserver 0.0.0.0:8000
-    command: gunicorn bitly.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn bitly.wsgi:application -w 5 --bind 0.0.0.0:8000
     volumes:
       - static_volume:/usr/src/app/staticfiles
-#    volumes:
-#      - .:/usr/src/app/
-#    ports:
-#      - 8000:8000
     expose:
       - 8000
     links:
@@ -35,12 +31,12 @@ services:
     build: ./redis
     restart: always
     expose:
-      - "6379"
+      - 6379
 
   db:
     image: mysql:5.7
-    ports:
-      - '3306:3306'
+    expose:
+      - 3306
     environment:
       MYSQL_DATABASE: 'bitly'
       MYSQL_USER: 'bitly'
