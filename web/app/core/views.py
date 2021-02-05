@@ -6,15 +6,24 @@ from django.core.cache import cache
 from core.models import Link
 from core.serializers import LinkSerializer
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 @api_view(['GET', 'POST', 'DELETE'])
 def link_list(request):
-    user_id = request.COOKIES['user_id']
+    try:
+        user_id = request.COOKIES['user_id']
+    except KeyError:
+        logger.error(f'Empty cookies user_id. {request.META.get("REMOTE_ADDR")}')
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'DELETE':
         data = request.data
 
         if user_id != data['user_id']:
+            logger.error(f'Wrong cookies user_id in delete method. {request.META.get("REMOTE_ADDR")}')
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         Link.objects.filter(id=data['id']).delete()
@@ -42,5 +51,6 @@ def link_list(request):
             cache.set(data['key'], data['url'], timeout=3600)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
+            logger.error('Data is not valid.')
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

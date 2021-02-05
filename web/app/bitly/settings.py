@@ -14,7 +14,6 @@ from pathlib import Path
 
 
 # from django.db.backends.mysql.base import DatabaseWrapper
-#
 # DatabaseWrapper.data_types['DateTimeField'] = 'datetime'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -108,6 +107,38 @@ DATABASES = {
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(name)-12s %(levelname)-8s %(message)s'
+        },
+        'file': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
+        'file': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': 'log/bitly.log'
+        }
+    },
+    'loggers': {
+        '': {
+            'level': 'WARNING',
+            'handlers': ['console', 'file']
+        }
+    }
+}
 
 
 # Password validation

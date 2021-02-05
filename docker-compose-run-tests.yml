@@ -3,8 +3,8 @@ version: '3.7'
 services:
   web:
     build: ./web
-#    command.md: python manage.py runserver 0.0.0.0:8000
-    command: gunicorn bitly.wsgi:application -w 5 --bind 0.0.0.0:8000
+    command: python manage.py test
+#    command: gunicorn bitly.wsgi:application -w 5 --bind 0.0.0.0:8000
     volumes:
       - static_volume:/usr/src/app/staticfiles
     expose:
@@ -19,15 +19,6 @@ services:
     depends_on:
       - redis
       - db
-
-  nginx:
-    build: ./nginx
-    volumes:
-      - static_volume:/home/app/web/staticfiles
-    ports:
-      - 1337:80
-    depends_on:
-      - web
 
   redis:
     build: ./redis
@@ -48,5 +39,6 @@ services:
     restart: always
     volumes:
       - ./mysql-data:/var/lib/mysql
+
 volumes:
   static_volume:
